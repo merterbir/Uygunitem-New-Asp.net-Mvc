@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "AltkategoriEkle";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<fieldset>
+    @using (Html.BeginForm("altkategoriEkleform", "Admin", FormMethod.Post, new { @class = "urunEkle" }))
+    {
+        <br />
+        <legend>ALT KATEGORİ EKLE</legend>
+        <br />
+        <div class="item">
+            <label for="name" style="color:black;">ALT KATEGORİ ADI GİRİNİZ<span>*</span></label><br /><br />
+            <input id="name" type="text" name="KateEkle" placeholder="Alt Kategori Adı Giriniz" required />
+        </div>
+        <div class="item">
+            <label for="name" style="color:black;">ÜST KATEGORİ SEÇİNİZ<span>*</span></label><br /><br />
+            <select name="select1" id="select1" required>
+                            <option selected value="" disabled>Üst Kategori</option>
+                            @foreach (var item in Model.kategoriler)
+                            {
+                                <option value="@item.kate_id">@item.kate_isim</option>
+                            }
+
+                        </select>
+        </div>
+
+        if (Model.hatamesaj == "Alt Kategori Ekleme Başarılı!")
+        {
+            <h3 style="color:greenyellow">@Model.hatamesaj</h3>
+        }
+        else
+        {
+            <h3 style="color:red">@Model.hatamesaj</h3>
+        }
+
+        <div class="btn-block">
+            <button type="submit">GÖNDER</button>
+        </div><br />
+    }
+
+</fieldset>
