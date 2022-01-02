@@ -43,8 +43,8 @@
                                                         <div class="bg-light d-inline-flex justify-content-center align-items-center align-top" style="width: 35px; height: 35px; border-radius: 3px;"><img src="~/@item.urun_foto_path" /></div>
                                                     </td>
                                                     <td class="text-nowrap align-middle">@item.urun_isim</td>
-                                                    <td class="text-nowrap align-middle"><span>@item.üstkate_id</span></td>
-                                                    <td class="text-nowrap align-middle"><span>@item.altkate_id</span></td>
+                                                    <td class="text-nowrap align-middle"><span>@Model.kategoriler.Where(x => x.kate_id == item.üstkate_id).Select(x => x.kate_isim).FirstOrDefault()</span></td>
+                                                    <td class="text-nowrap align-middle"><span>@Model.alt_kategoriler.Where(x => x.altkate_id == item.altkate_id).Select(x => x.altkate_isim).FirstOrDefault()</span></td>
 
                                                     
                                                     <td class="text-center align-middle">

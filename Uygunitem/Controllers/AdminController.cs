@@ -107,9 +107,16 @@ namespace Uygunitem.Controllers
                 }
                 model.urun_foto_path = "themes/images/products/" + file.FileName;
                 model.üstkate_id = Convert.ToInt32(form["DrpUst"].Trim());
-                model.altkate_id = Convert.ToInt32(form["DrpAlt"].Trim()); 
-               
-                db.urunler.Add(model);
+                    if (form["DrpAlt"] != null)
+                    {
+                        model.altkate_id = Convert.ToInt32(form["DrpAlt"].Trim());
+
+                    }
+
+
+
+
+                    db.urunler.Add(model);
                 db.SaveChanges();
                 //else
                 //{
@@ -144,8 +151,12 @@ namespace Uygunitem.Controllers
             viewModel.footer = db.footer.ToList();
             viewModel.yorumlar = db.yorumlar.ToList();
             viewModel.hataliUrunler = db.hataliUrunler.ToList();
+            
+
             var urun = db.urunler.Find(id);
             viewModel.urunGetir = urun;
+            viewModel.üstKategoriler = new SelectList(db.kategoriler, "kate_id", "kate_isim");
+            viewModel.altKategoriler = new SelectList(db.alt_kategoriler, "altkate_id", "altkate_isim");
             return View("urunGetir", viewModel);
         }
         [Authorize]
@@ -228,16 +239,86 @@ namespace Uygunitem.Controllers
         }
         [Authorize]
         [HttpPost]
-        public ActionResult urunGuncelle(ViewModel p1)
+        public ActionResult urunGuncelle(HttpPostedFileBase file,ViewModel p1,FormCollection Form)
         {
             var urun = db.urunler.Find(p1.urunGetir.urun_id);
             
-            urun.urun_aciklama = p1.urunGetir.urun_aciklama;
-            urun.urun_isim = p1.urunGetir.urun_isim;
+            
             //urun.üstkate_id = p1.urunGetir.üstkate_id;
             //urun.altkate_id = p1.urunGetir.altkate_id;
+            try
+            {
+                if(!(file == null))
+                {
+                    if (file.ContentType == "image/jpeg" || file.ContentType == "image/jpg" || file.ContentType == "image/png" || file.ContentType == "image/gif")
+                    {
+
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            try
+                            {
+                                string path = Path.Combine(Server.MapPath("~/themes/images/products"),
+                                                           Path.GetFileName(file.FileName));
+                                file.SaveAs(path);
+                                //ViewBag.Message = "File uploaded successfully";
+                            }
+                            catch (Exception ex)
+                            {
+                                ViewBag.Message = "ERROR:" + ex.Message.ToString();//
+                            }
+                        }
+                        else
+                        {
+                            urun.urun_foto_path = urun.urun_foto_path;
+                        }
+                        urun.urun_foto_path = "themes/images/products/" + file.FileName;
+
+
+
+
+
+                        //else
+                        //{
+                        //    ViewBag.Message = "You have not specified a file.";
+                        //}
+                        ViewBag.Message = "Ürün Ekleme Başarılı!";
+
+
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Dosya uzantısı geçersiz!";
+                    }
+                }
+                else
+                {
+                    urun.urun_foto_path = urun.urun_foto_path;
+                }
+                
+
+            }
+            catch (Exception ex)
+            {
+
+                ViewBag.Message = "ERROR:" + ex.Message.ToString();
+            }
+            //urun.üstkate_id = p1.urunGetir.üstkate_id;
+            //if(p1.urunGetir.altkate_id != null)
+            //{
+            //    urun.altkate_id = p1.urunGetir.altkate_id;
+            //}
+            if (Form["DrpAlt"] != null)
+            {
+                urun.altkate_id = Convert.ToInt32(Form["DrpAlt"].Trim());
+            }
+            if (Form["DrpUst"] != null)
+            {
+                urun.üstkate_id = Convert.ToInt32(Form["DrpUst"].Trim());
+            }
+            urun.urun_aciklama = p1.urunGetir.urun_aciklama;
+            urun.urun_isim = p1.urunGetir.urun_isim;
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("urunGetir", new { id = urun.urun_id});
         }
         [Authorize]
         public ActionResult kategoriDuzenleme()
@@ -409,7 +490,7 @@ namespace Uygunitem.Controllers
                                   }).ToList();
             return Json(altKategoriler, JsonRequestBehavior.AllowGet);
         }
-
+   
 
     }
 }

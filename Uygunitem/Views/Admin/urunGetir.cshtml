@@ -7,9 +7,9 @@
 
 <div class="testbox">
      <fieldset>
-        @using (Html.BeginForm("urunGuncelle", "Admin", FormMethod.Post, new { @class = "urunEkle" }))
+        @using (Html.BeginForm("urunGuncelle", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", @class = "urunEkle" }))
         {
-            
+
             <legend>ÜRÜN DÜZENLEME FORMU </legend>
             <div class="item">
                 @Html.HiddenFor(m => m.urunGetir.urun_id)
@@ -23,12 +23,54 @@
                 
 
             </div>
+            <div class="item">
+            @Html.DropDownList("DrpUst", Model.üstKategoriler, "----- Kategori Seçiniz -----")
+
+                </div>
+            <div class="item">
+                @Html.DropDownList("DrpAlt", Model.altKategoriler, "----- Alt Kategori Seçiniz -----")
+            </div>
+            <div class="item">
+                <img src="~/@Model.urunGetir.urun_foto_path" style="width:150px;height:150px" />
+            </div>
+            
+            <label for="file">Ürün Fotoğrafı Yükleyiniz:</label>
+            <input type="file" name="file" id="file" /><br><br>
+            if (ViewBag.Message == "Ürün Ekleme Başarılı!")
+            {
+                <h3 style="color:greenyellow">@ViewBag.Message</h3>
+            }
+            else
+            {
+                <h3 style="color:red">@ViewBag.Message</h3>
+            }
            
             <div class="btn-block">
-                 <button type="submit">APPLY</button>
+                 <button type="submit" >APPLY</button>
             </div>                                
          }
 
           </fieldset>
                                                
 </div>
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<script>
+    $(function () {
+        $('#DrpUst').change(function () {
+            var id = $('#DrpUst').val();
+            $.ajax({
+                url: '/Admin/altKateGetir',
+                data: { p: id },
+                type: "POST",
+                dataType: "Json",
+                success: function (data) {
+                    console.log(data);
+                    $('#DrpAlt').empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $('#DrpAlt').append("<option value='" + data[i].Value + "'>" + data[i].Text + "</Option>");
+                    }
+                }
+            });
+        });
+    });
+</script>
