@@ -368,6 +368,7 @@ namespace Uygunitem.Controllers
         {
             ViewModel viewModel = new ViewModel();
             viewModel.alt_kategoriler = db.alt_kategoriler.ToList();
+            viewModel.kategoriler = db.kategoriler.ToList();
             return View("altkategoriDuzenleme", viewModel);
         }
         [Authorize]
@@ -490,7 +491,29 @@ namespace Uygunitem.Controllers
                                   }).ToList();
             return Json(altKategoriler, JsonRequestBehavior.AllowGet);
         }
-   
+        
+        public ActionResult altkategoriSil(int id)
+        {
+            var silinecek = db.alt_kategoriler.Find(id);
+            db.alt_kategoriler.Remove(silinecek);
+            db.SaveChanges();
+            return RedirectToAction("altkategoriDuzenleme");
+        }
+        public ActionResult ustkategoriSil(int id)
+        {
+            var silinecek = db.kategoriler.Find(id);
+            db.kategoriler.Remove(silinecek);
+            db.SaveChanges();
+            return RedirectToAction("kategoriDuzenleme");
+        }
+        public ActionResult urunSil(int id)
+        {
+            var silinecek = db.urunler.Find(id);
+            db.urunler.Remove(silinecek);
+            db.SaveChanges();
+            return RedirectToAction("urunDuzenleme");
+        }
+
 
     }
 }

@@ -27,7 +27,7 @@
                                             <tr>
                                                 <th class="max-width">Alt Kategori Numarası</th>
                                                 <th class="sortable">Alt Kategori Adı</th>
-                                                <th class="sortable">Üst Kategori Numarası</th>
+                                                <th class="sortable">Üst Kategori Adı</th>
                                                 <th class="sortable">Düzenle</th>
                                             </tr>
                                         </thead>
@@ -39,12 +39,15 @@
 
                                                 <td class="text-nowrap align-middle">@item.altkate_id</td>
                                                 <td class="text-nowrap align-middle"><span>@item.altkate_isim</span></td>
-                                                <td class="text-nowrap align-middle"><span>@item.üstkate_id</span></td>
+                                                <td class="text-nowrap align-middle"><span>@Model.kategoriler.Where(x => x.kate_id == item.üstkate_id).Select(x => x.kate_isim).FirstOrDefault()</span></td>
                                                 <td class="text-center align-middle">
                                                     <div class="btn-group align-top">
                                                         <a class="btn-sm btn-outline-secondary badge" href="/Admin/altkategoriGetir/@item.altkate_id" target="_blank">Edit</a>
+                                                        <a class="btn-outline-secondary badge" href="/Admin/altkategoriSil/@item.altkate_id"><i class="fa fa-trash"></i></a>
 
-                                                        <button class="btn-outline-secondary badge" type="button"><i class="fa fa-trash"></i></button>
+
+                                                        @*@Html.ActionLink("Link Metni", "altkategoriSil", "Admin", new { id = @item.altkate_id }, new { target = "_blank", name = "link", style = "color : red" })*@
+                                                        @*<button class="btn-outline-secondary badge" type="button"><i class="fa fa-trash"></i></button>*@
                                                     </div>
                                                 </td>
                                             </tr>
